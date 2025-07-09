@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이준영의 포트폴리오</title>
+    <style>
+        /* 배경을 푸른색 그라데이션으로 설정 */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #0099ff, #66ccff);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        /* 제목 스타일 */
+        h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        /* 버튼을 담을 컨테이너 */
+        .button-container {
+            display: flex;
+            flex-direction: column; /* 세로로 버튼 배치 */
+            gap: 20px;
+            align-items: center;
+        }
+
+        /* 버튼 스타일 */
+        .button {
+            padding: 15px 30px;
+            font-size: 18px;
+            color: white;
+            background-color: #007acc;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            width: 250px;
+            text-align: center;
+        }
+
+        /* 버튼 hover 효과 */
+        .button:hover {
+            background-color: #005fa3;
+        }
+
+    </style>
+</head>
+<body>
+    <div>
+        <h1>이준영의 포트폴리오</h1>
+
+        <div class="button-container">
+            <a href="#" class="button">즐겨찾는 페이지</a>
+            <a href="#" class="button">파이썬 프로그래밍</a>
+            <!-- HTML 프로그래밍 버튼이 game.html로 이동하도록 변경 -->
+            <a href="game.html" class="button">HTML 프로그래밍</a>
+            <a href="#" class="button">자기소개</a>
+        </div>
+    </div>
+</body>
+</html>
+

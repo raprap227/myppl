@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>청소년 상식 OX 게임</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            animation: rainbow 3s ease-in-out infinite;
+        }
+
+        @keyframes rainbow {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .title {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .score-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .question-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #4ecdc4;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .answer-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            padding: 15px 40px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .o-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+
+        .x-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .answer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .answer-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feedback.show {
+            opacity: 1;
+        }
+
+        .correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .next-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .final-score {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .grade {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .grade-excellent {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .grade-good {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .grade-average {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .grade-poor {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .restart-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            transition: width 0.3s ease;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 2em;
+            }
+            
+            .answer-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .answer-btn {
+                padding: 12px 30px;
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="title">🧠 청소년 상식 OX 게임</h1>
+        
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-label">현재 문제</div>
+                <div class="score-value" id="current-question">1</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">맞힌 문제</div>
+                <div class="score-value" id="correct-count">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">전체 문제</div>
+                <div class="score-value" id="total-questions">15</div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <div id="game-area">
+            <div class="question-container">
+                <div class="question-number" id="question-number">문제 1</div>
+                <div class="question-text" id="question-text">문제를 로딩 중...</div>
+            </div>
+
+            <div class="answer-buttons">
+                <button class="answer-btn o-btn" id="o-btn">⭕ O</button>
+                <button class="answer-btn x-btn" id="x-btn">❌ X</button>
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+            <button class="next-btn" id="next-btn" style="display: none;">다음 문제</button>
+        </div>
+
+        <div id="game-over" class="game-over" style="display: none;">
+            <div class="final-score" id="final-score"></div>
+            <div class="grade" id="grade"></div>
+            <button class="restart-btn" id="restart-btn">다시 시작</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "한국의 수도는 서울이다.",
+                answer: true,
+                explanation: "정답! 한국의 수도는 서울특별시입니다."
+            },
+            {
+                question: "지구는 태양 주위를 시계방향으로 돈다.",
+                answer: false,
+                explanation: "틀렸습니다. 지구는 태양 주위를 반시계방향으로 공전합니다."
+            },
+            {
+                question: "물의 끓는점은 100도이다.",
+                answer: true,
+                explanation: "정답! 1기압에서 물의 끓는점은 100°C입니다."
+            },
+            {
+                question: "인간의 심장은 4개의 방으로 나뉘어져 있다.",
+                answer: true,
+                explanation: "정답! 심장은 좌심방, 우심방, 좌심실, 우심실로 구성됩니다."
+            },
+            {
+                question: "광합성은 밤에 일어난다.",
+                answer: false,
+                explanation: "틀렸습니다. 광합성은 빛이 있을 때 일어나므로 주로 낮에 일어납니다."
+            },
+            {
+                question: "세계에서 가장 큰 대양은 태평양이다.",
+                answer: true,
+                explanation: "정답! 태평양은 세계에서 가장 큰 대양입니다."
+            },
+            {
+                question: "DNA는 유전정보를 담고 있다.",
+                answer: true,
+                explanation: "정답! DNA는 생명체의 유전정보를 저장하는 분자입니다."
+            },
+            {
+                question: "북극곰은 남극에 살고 있다.",
+                answer: false,
+                explanation: "틀렸습니다. 북극곰은 북극에 살고, 남극에는 펭귄이 살고 있습니다."
+            },
+            {
+                question: "한 해는 항상 365일이다.",
+                answer: false,
+                explanation: "틀렸습니다. 윤년에는 366일이 있습니다."
+            },
+            {
+                question: "인간의 뇌는 몸무게의 약 2%를 차지한다.",
+                answer: true,
+                explanation: "정답! 뇌는 체중의 약 2%를 차지하지만 전체 에너지의 20%를 소비합니다."
+            },
+            {
+                question: "달은 지구보다 크다.",
+                answer: false,
+                explanation: "틀렸습니다. 달의 지름은 지구의 약 1/4 정도입니다."
+            },
+            {
+                question: "한국의 국화는 무궁화이다.",
+                answer: true,
+                explanation: "정답! 무궁화는 한국의 국화입니다."
+            },
+            {
+                question: "빛의 속도는 소리의 속도보다 빠르다.",
+                answer: true,
+                explanation: "정답! 빛의 속도는 약 30만 km/s로 소리보다 훨씬 빠릅니다."
+            },
+            {
+                question: "공룡과 인간은 같은 시대에 살았다.",
+                answer: false,
+                explanation: "틀렸습니다. 공룡은 약 6500만 년 전에 멸종했고, 인간은 훨씬 나중에 나타났습니다."
+            },
+            {
+                question: "인간의 정상 체온은 약 36.5도이다.",
+                answer: true,
+                explanation: "정답! 인간의 정상 체온은 약 36.5°C입니다."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let gameQuestions = [];
+
+        // 게임 요소들
+        const gameArea = document.getElementById('game-area');
+        const gameOverArea = document.getElementById('game-over');
+        const questionNumber = document.getElementById('question-number');
+        const questionText = document.getElementById('question-text');
+        const oBtn = document.getElementById('o-btn');
+        const xBtn = document.getElementById('x-btn');
+        const feedback = document.getElementById('feedback');
+        const nextBtn = document.getElementById('next-btn');
+        const currentQuestionSpan = document.getElementById('current-question');
+        const correctCountSpan = document.getElementById('correct-count');
+        const progressFill = document.getElementById('progress-fill');
+        const finalScore = document.getElementById('final-score');
+        const grade = document.getElementById('grade');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // 게임 초기화
+        function initGame() {
+            currentQuestion = 0;
+            correctAnswers = 0;
+            gameQuestions = [...questions].sort(() => Math.random() - 0.5);
+            gameArea.style.display = 'block';
+            gameOverArea.style.display = 'none';
+            updateDisplay();
+            showQuestion();
+        }
+
+        // 화면 업데이트
+        function updateDisplay() {
+            currentQuestionSpan.textContent = currentQuestion + 1;
+            correctCountSpan.textContent = correctAnswers;
+            progressFill.style.width = ((currentQuestion + 1) / questions.length) * 100 + '%';
+        }
+
+        // 문제 표시
+        function showQuestion() {
+            const question = gameQuestions[currentQuestion];
+            questionNumber.textContent = `문제 ${currentQuestion + 1}`;
+            questionText.textContent = question.question;
+            
+            // 버튼 활성화
+            oBtn.disabled = false;
+            xBtn.disabled = false;
+            
+            // 피드백 숨기기
+            feedback.classList.remove('show');
+            nextBtn.style.display = 'none';
+        }
+
+        // 답변 확인
+        function checkAnswer(userAnswer) {
+            const question = gameQuestions[currentQuestion];
+            const isCorrect = userAnswer === question.answer;
+            
+            // 버튼 비활성화
+            oBtn.disabled = true;
+            xBtn.disabled = true;
+            
+            // 피드백 표시
+            feedback.textContent = question.explanation;
+            feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+            
+            if (isCorrect) {
+                correctAnswers++;
+                correctCountSpan.textContent = correctAnswers;
+            }
+            
+            // 다음 버튼 표시
+            if (currentQuestion < questions.length - 1) {
+                nextBtn.style.display = 'block';
+            } else {
+                setTimeout(endGame, 1500);
+            }
+        }
+
+        // 다음 문제
+        function nextQuestion() {
+            currentQuestion++;
+            updateDisplay();
+            showQuestion();
+        }
+
+        // 게임 종료
+        function endGame() {
+            gameArea.style.display = 'none';
+            gameOverArea.style.display = 'block';
+            
+            const percentage = (correctAnswers / questions.length) * 100;
+            finalScore.textContent = `${correctAnswers}/${questions.length} (${percentage.toFixed(1)}%)`;
+            
+            let gradeText, gradeClass;
+            if (percentage >= 90) {
+                gradeText = "🏆 우수! 상식 박사네요!";
+                gradeClass = "grade-excellent";
+            } else if (percentage >= 70) {
+                gradeText = "👍 잘했어요! 좋은 성적이에요!";
+                gradeClass = "grade-good";
+            } else if (percentage >= 50) {
+                gradeText = "😊 보통이에요. 조금 더 공부해봐요!";
+                gradeClass = "grade-average";
+            } else {
+                gradeText = "💪 다시 도전해보세요!";
+                gradeClass = "grade-poor";
+            }
+            
+            grade.textContent = gradeText;
+            grade.className = 'grade ' + gradeClass;
+        }
+
+        // 이벤트 리스너
+        oBtn.addEventListener('click', () => checkAnswer(true));
+        xBtn.addEventListener('click', () => checkAnswer(false));
+        nextBtn.addEventListener('click', nextQuestion);
+        restartBtn.addEventListener('click', initGame);
+
+        // 게임 시작
+        initGame();
+    </script>
+</body>
+</html>
